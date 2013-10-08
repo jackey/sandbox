@@ -1,0 +1,3 @@
+AUTOMAKE_OPTIONS=foreign
+bin_PROGRAMS=smanagement
+smanagement_SOURCES=smanagement.c
