@@ -5,28 +5,35 @@
 #include <errno.h>
 #include <string.h>
 #include <dirent.h>
+#include <locale.h>
 #include <wchar.h>
 #include "smanagement.h"
 
 int main(int argc, char **argv) {
-	student s1 = {
-		"2013100710001",
-		25,
-		"陈子文",
-		"432425198802246211"
-	};
-	add_student(s1);
+	// student s1 = {
+	// 	"2013100710001",
+	// 	25,
+	// 	"陈子文",
+	// 	"432425198802246211"
+	// };
+	// add_student(s1);
 
-	student s2 = {
-		"2013100710002",
-		23,
-		"李秀",
-		"432425199008156211"
-	};
-	add_student(s2);
+	// student s2 = {
+	// 	"2013100710002",
+	// 	23,
+	// 	"李秀",
+	// 	"432425199008156211"
+	// };
+	// add_student(s2);
 
 	//del_student(s1);
-	init();
+	// init();
+	wchar_t wstr[] = L"你好";
+	setlocale(LC_ALL, "en_US.UTF-8");
+	int i;
+	for (i = 9; i < wcslen(wstr); i++) {
+		wprintf(L"%lc\n", wstr[i]);
+	}
 
 	return 0;
 }
@@ -121,15 +128,17 @@ int init() {
 			int i;
 			for (i = 0; content[i] != '\0'; i++) {
 				int utf8_char_len = UTF8_CHAR_LEN(content[i]);
+				char *p;
 				if (utf8_char_len > 1) {
 					char word[4]; // Max size of utf-8
 					memcpy(word, (content + i), utf8_char_len); 
 					i += utf8_char_len - 1;
-					//printf("%s\t", word);
 				}
 				else {
-					//printf("%c\t", content[i]);
+					char c = content[i];
+					p = &c;
 				}
+				printf("%c", *p);
 			}
 			fclose(data_file);
 		}
