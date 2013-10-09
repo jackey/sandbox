@@ -14,6 +14,8 @@ typedef int bool;
 #define STUDENT_BUF_LEN sizeof(student) + 4
 #define DATA_DIR_LEN sizeof(DATA_DIR) + 10
 #define MAX_STUDENT 2000 // Max student that system can handle.
+#define member_size(type, member) sizeof(((type *)0)->member)
+#define UTF8_CHAR_LEN( byte ) ((( 0xE5000000 >> (( byte >> 3 ) & 0x1e )) & 3 ) + 1)
 
 static student s_list[MAX_STUDENT];
 

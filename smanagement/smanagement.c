@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <string.h>
 #include <dirent.h>
+#include <wchar.h>
 #include "smanagement.h"
 
 int main(int argc, char **argv) {
@@ -26,6 +27,7 @@ int main(int argc, char **argv) {
 
 	//del_student(s1);
 	init();
+
 	return 0;
 }
 
@@ -86,25 +88,52 @@ void data_path(student s, char path[]) {
 }
 
 int init() {
+	int len;
 	DIR *data_dir;
 	data_dir = opendir(DATA_DIR);
 	if (!data_dir) {
-		return fprintf(stderr, "error happened when open %s", DATA_DIR);
+		fprintf(stderr, "error happened when open %s", DATA_DIR);
+		return -1;
 	}
 	struct dirent *dir_entity = readdir(data_dir);
 	if (dir_entity == NULL) {
-		return fprintf(stderr, "error happened when read dir %s\n", DATA_DIR);
+		fprintf(stderr, "error happened when read dir %s\n", DATA_DIR);
+		return -1;
 	}
 	char data_files[MAX_STUDENT];
 	while (dir_entity != NULL) {
-		dir_entity = readdir(data_dir);
 		char *name = dir_entity->d_name;
 		if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) {
-			printf("%s\n", name);
+			// If filename is "." or "..", ignore it.
 		}
 		else {
-			printf("%s\n", name);
+			len = (member_size(student, xj) + DATA_DIR_LEN ) * sizeof(char);
+			char content[STUDENT_BUF_LEN];
+			char *data_file_name = (char *) malloc(len);
+			memcpy(data_file_name, "./data/", 7);
+			memcpy(data_file_name + 7, name, strlen(name) + 1);
+			FILE *data_file = fopen(data_file_name, "r");
+			if (!data_file) {
+				fprintf(stderr, "error happened when read file: %s", name);
+				return -1;
+			}
+			fgets(content, STUDENT_BUF_LEN, data_file);
+			int i;
+			for (i = 0; content[i] != '\0'; i++) {
+				int utf8_char_len = UTF8_CHAR_LEN(content[i]);
+				if (utf8_char_len > 1) {
+					char word[4]; // Max size of utf-8
+					memcpy(word, (content + i), utf8_char_len); 
+					i += utf8_char_len - 1;
+					//printf("%s\t", word);
+				}
+				else {
+					//printf("%c\t", content[i]);
+				}
+			}
+			fclose(data_file);
 		}
 
+		dir_entity = readdir(data_dir);
 	}
 }
