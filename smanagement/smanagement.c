@@ -10,30 +10,24 @@
 #include "smanagement.h"
 
 int main(int argc, char **argv) {
-	// student s1 = {
-	// 	"2013100710001",
-	// 	25,
-	// 	"陈子文",
-	// 	"432425198802246211"
-	// };
-	// add_student(s1);
+	student s1 = {
+		"2013100710001",
+		25,
+		"陈子文",
+		"432425198802246211"
+	};
+	add_student(s1);
 
-	// student s2 = {
-	// 	"2013100710002",
-	// 	23,
-	// 	"李秀",
-	// 	"432425199008156211"
-	// };
-	// add_student(s2);
+	student s2 = {
+		"2013100710002",
+		23,
+		"李秀",
+		"432425199008156211"
+	};
+	add_student(s2);
 
 	//del_student(s1);
-	// init();
-	wchar_t wstr[] = L"你好";
-	setlocale(LC_ALL, "en_US.UTF-8");
-	int i;
-	for (i = 9; i < wcslen(wstr); i++) {
-		wprintf(L"%lc\n", wstr[i]);
-	}
+	init();
 
 	return 0;
 }
@@ -125,6 +119,12 @@ int init() {
 				return -1;
 			}
 			fgets(content, STUDENT_BUF_LEN, data_file);
+			char *token = strtok(content, ":");
+			printf("%s\n", token);
+			char *token2;
+			while (NULL != token2 = strtok(NULL, ":")) {
+				printf("%s\n", token2);
+			}
 			int i;
 			for (i = 0; content[i] != '\0'; i++) {
 				int utf8_char_len = UTF8_CHAR_LEN(content[i]);
