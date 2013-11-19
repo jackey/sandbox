@@ -1,14 +1,23 @@
 #!/usr/bin/env bash
 
-function restart_httpd {
-	/etc/init.d/httpd restart
+function restart_service {
+        service httpd restart
+        service postfix restart
 }
 
-free=$(cat /proc/meminfo | grep "MemFree" | awk '{print $2}')
+function clean_cache {
+        sync; echo 3 > /proc/sys/vm/drop_caches
+}
 
-# less than 20MB 
+# MB
+used=$(free -m | awk '/^Mem:/{print $3}')
 
-if [[ $free -lt 20480 ]]; then
-	sync
-	restart_httpd
+# greater than 1900MB
+
+if [[ $used -gt 1900 ]]; then
+        clean_cache
+        restart_httpd
+        echo "restared service"
+else
+        echo "nothing"
 fi
